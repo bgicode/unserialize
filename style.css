@@ -1,0 +1,151 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #ffffff;
+}
+
+body {
+    background-color: #d8d8d8;
+}
+
+.wrap {
+    margin-bottom: 50px;
+}
+
+textarea:focus {
+    color: #1d1d1d;
+    background-color: #ffffff;
+    border-color: #bdbdbd;
+    outline: 0;
+    box-shadow: 0px 0px 21px 5px rgba(0, 204, 255, 0.31);
+}
+
+textarea::placeholder {
+    color: #a5a4a4;
+}
+
+textarea {
+    border-radius: 5px;
+    padding: 10px;
+    height: 100px;
+    border: none;
+    background-color: rgb(226, 226, 226);
+    color: rgb(69, 50, 85);
+    font-weight: 700;
+}
+
+.submitBtn {
+    margin-top: 10px;
+    font-size: 18px;
+    line-height: 22px;
+    padding: 10px 20px;
+    outline: 0;
+    border-radius: 5px;
+    border: none;
+    background-color: rgb(211, 127, 0);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.submitBtn:hover {
+    background-color: rgb(255, 131, 30);
+}
+
+.submitBtn:active {
+    background-color: rgb(255, 172, 104);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.formTitle {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: rgb(255, 255, 254);
+}
+
+.formWraper {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+    background-color: rgb(72, 94, 119);
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.btnWrap {
+    margin-top: 10px;
+}
+
+form p {
+    line-height: 32px;
+    padding-left: 10px;
+}
+
+form label {
+    background-color: rgb(211, 127, 0);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    height: auto;
+}
+
+form label:hover {
+    background-color: rgb(255, 131, 30);
+    color: white;
+}
+  
+form label:active, form button:active {
+    background-color: rgb(255, 172, 104);
+    color: white;
+}
+
+form ol {
+    padding-left: 0;
+}
+
+form li, div > p, li > p {
+    background: #eee;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    list-style-type: none;
+    color: rgb(72, 94, 119);
+    line-height: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin: 0;
+}
+
+.FileData {
+    width: 0px;
+    margin-bottom: 10px;
+}
+
+.result {
+    display: flex;
+    margin-top: 20px;
+    flex-direction: column;
+}
+
+.result *{
+    display: inline-block;
+    color: #1d1d1d;
+    overflow-wrap: normal;
+    word-wrap: break-word;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+pre {
+    overflow-wrap: normal;
+    word-wrap: break-word;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
