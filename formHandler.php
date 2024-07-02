@@ -14,7 +14,7 @@ if ($_POST['submit_btn']) {
             $arResult = $arUnser;
         } else {
             $patternN = '/""/';
-            $replacements = '"empty_string"';
+            $replacements = '" "';
             $dounloadFile = preg_replace($patternN, $replacements,  $dounloadFile);
             $dounloadFile = rusTranslit($dounloadFile);
             $fileName = pathinfo($_FILES['FileData']['name']);
@@ -68,20 +68,21 @@ if ($_POST['submit_btn']) {
                 }, $dounloadFile);
 
                 $patternIdentify = '/("?;?[a-zA-Z]?:\d+:("|({))?)(.*?)(?=(("?;?[a-zA-Z]?:\d+:"?({)?)|\z))/';
+                $patternIdentify = '/(("?;?[a-zA-Z]?:\d+:")|("?;?[a-zA-Z]?:\d+:({)))(.*?)(?=(("?;?[a-zA-Z]?:\d+:")|("?;?[a-zA-Z]?:\d+:({))|\z))/';
                 $count = 0;
                 $dounloadFile = preg_replace_callback($patternIdentify, function($matches) use (&$count, &$lastMatch) {
                     $count++;
                     
                     if ($count % 2 == 0) {
-                            $lastMatch = $matches[4];
-                            return "|" . $matches[4] . $matches[3];
+                            $lastMatch = $matches[5];
+                            return "|" . $matches[5] . $matches[4];
                     } else {
-                        if($matches[3] == '{'){
+                        if($matches[4] == '{'){
                             $count++;
                             return "~" . $lastMatch . $count . "|{";
                         } else {
-                            $lastMatch = $matches[4];
-                            return "~" . $matches[4]. $matches[3];
+                            $lastMatch = $matches[5];
+                            return "~" . $matches[5]. $matches[4];
                         }
                     }
                     
