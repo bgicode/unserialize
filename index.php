@@ -33,6 +33,7 @@ include_once('formHandler.php');
             <div class="result">
                 <?php
                     if ($arResult) {
+                        echo "<span>" . $message . "</span>";
                         echo "<span>файл: " . $fileName['basename'] . "</span>";
                         echo "<pre>";
                         print_r($arResult);

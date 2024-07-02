@@ -82,3 +82,36 @@ function rusTranslit($string)
     
     return strtr($string, $converter);
 }
+
+function removeElementByKey($array, $key) {
+    foreach ($array as $arrayKey => $value) {
+        if ($arrayKey === $key) {
+            unset($array[$key]);
+        }
+        if (is_array($value)) {
+            $array[$arrayKey] = removeElementByKey($value, $key);
+        }
+    }
+    return $array;
+}
+
+function margeDuble($array){
+    if (is_array($array)) {
+        $newArray = array();
+        $prevKey = '';
+        foreach ($array as $key => $value) {
+            if (preg_match('/^(Bitrix[^\d]+)(\d+)$/', $key, $matches)) {
+                if (!empty($prevKey)) {
+                    $newArray[$prevKey] = [];
+                    $newArray[$prevKey][$matches[1]] = margeDuble($value);
+                }
+            } else {
+                $newArray[$key] = margeDuble($value);
+                $prevKey = $key;
+            }
+        }
+        return $newArray;
+    } else {
+        return $array;
+    }
+}
