@@ -1,55 +1,63 @@
 <?php
 
-function dessrial($str) {
-    $BreckDel = false;
-    $breckC = 0;
-    $Brecerts = false;
-    $firstBreck = false;
-    $arr = array();
+function dessrial($string)
+{
+    $bracketsDel = false;
+    $bracketsOpenCount = 0;
+    $brackets = false;
+    $firstBrackets = false;
+    $arUnseria = array();
     $key = '';
-    $len = strlen($str);
+    $len = strlen($string);
+
     for ($i = 0; $i <= $len; $i++) {
-        if ($str[$i]  == '~' && !$Brecerts) {
+
+        if ($string[$i]  == '~' && !$brackets) {
             $i = $i + 1;
             $keyflag = false;
             $key = '';
         }
 
-        if ($str[$i] != '|' && !$keyflag) {
-            $key = $key . $str[$i];
+        if ($string[$i] != '|' && !$keyflag) {
+            $key = $key . $string[$i];
         } else {
             $keyflag = true;
         }
-        if ($keyflag && $str[$i] != '|') {
-            if(($str[$i] == '`') && !$firstBreck && !$BreckDel) {
-                $Brecerts = true;
-                $firstBreck = true;
-                $breckC = $breckC + 1;
-            } elseif ($str[$i] == '`' && $BreckDel){
-                $breckC = $breckC + 1;
+
+        if ($keyflag && $string[$i] != '|') {
+            if(($string[$i] == '`') && !$firstBrackets && !$bracketsDel) {
+                $brackets = true;
+                $firstBrackets = true;
+                $bracketsOpenCount = $bracketsOpenCount + 1;
+            } elseif ($string[$i] == '`' && $bracketsDel){
+                $bracketsOpenCount = $bracketsOpenCount + 1;
             }
 
-            if ($firstBreck) {
-                $firstBreck = false;
-                $BreckDel =true;
+            if ($firstBrackets) {
+                $firstBrackets = false;
+                $bracketsDel =true;
                 continue;
             }
-            if ($str[$i] == '^') {
-                $breckC = $breckC - 1;
-                if ($breckC == 0) {
-                    $firstBreck = false;
-                    $Brecerts = false;
-                    $BreckDel = false;
-                    $arr[$key] = dessrial($arr[$key]);
+
+            if ($string[$i] == '^') {
+                $bracketsOpenCount = $bracketsOpenCount - 1;
+                if ($bracketsOpenCount == 0) {
+                    $firstBrackets = false;
+                    $brackets = false;
+                    $bracketsDel = false;
+                    $arUnseria[$key] = dessrial($arUnseria[$key]);
                     continue;
                 }
             }
-            $arr[$key] = $arr[$key] . $str[$i];
-        } elseif ($keyflag && $Brecerts) {
-            $arr[$key] = $arr[$key] . $str[$i];
+
+            $arUnseria[$key] = $arUnseria[$key] . $string[$i];
+
+        } elseif ($keyflag && $brackets) {
+            $arUnseria[$key] = $arUnseria[$key] . $string[$i];
         }
+
     }
-    return $arr;
+    return $arUnseria;
 }
 
 function rusTranslit($string)
@@ -95,10 +103,12 @@ function removeElementByKey($array, $key) {
     return $array;
 }
 
-function margeDuble($array){
+function margeDuble($array)
+{
     if (is_array($array)) {
         $newArray = array();
         $prevKey = '';
+        
         foreach ($array as $key => $value) {
             if (preg_match('/^(Bitrix[^\d]+)(\d+)$/', $key, $matches)) {
                 if (!empty($prevKey)) {
@@ -110,8 +120,11 @@ function margeDuble($array){
                 $prevKey = $key;
             }
         }
+
         return $newArray;
+
     } else {
+
         return $array;
     }
 }

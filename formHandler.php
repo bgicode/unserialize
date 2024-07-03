@@ -7,22 +7,22 @@ if ($_POST['submit_btn']) {
 
     if (isset($_FILES['FileData'])) {
 
-        $dounloadFile = file_get_contents($_FILES['FileData']['tmp_name']);
+        $uploadFile = file_get_contents($_FILES['FileData']['tmp_name']);
 
-        if ($arUnser = unserialize($dounloadFile)) {
+        if ($arUnser = unserialize($uploadFile)) {
             $message = "Стандартный метод десериализация";
             $arResult = $arUnser;
         } else {
-            $patternN = '/""/';
+            $patternEptyString = '/""/';
             $replacements = '" "';
-            $dounloadFile = preg_replace($patternN, $replacements,  $dounloadFile);
-            $dounloadFile = rusTranslit($dounloadFile);
+            $uploadFile = preg_replace($patternEptyString, $replacements, $uploadFile);
+            $uploadFile = rusTranslit($uploadFile);
             $fileName = pathinfo($_FILES['FileData']['name']);
 
-            $pattern = '/[s|O]:(\d+):"(.+?)"(;|:)/';
+            $patternIdents = '/[s|O]:(\d+):"(.+?)"(;|:)/';
 
             $correct = preg_replace_callback(
-                $pattern,
+                $patternIdents,
                 function ($match) {
                     $length = strlen($match[2]);
                     if ($match[3] == ';') {
@@ -32,7 +32,7 @@ if ($_POST['submit_btn']) {
                     }
                     
                 },
-                $dounloadFile);
+                $uploadFile);
 
             if($arUnser = unserialize($correct)) {
                 $message = "Стандартный метод десериализация, в исходном файле исправлены ошибки,<br>кирилица транслитирована";
@@ -40,10 +40,10 @@ if ($_POST['submit_btn']) {
             } else {
                 $message = "Внимание: кастомная десериализация,<br>кирилица транслитирована";
 
-                $dounloadFile = str_replace('~', '', $dounloadFile);
-                $dounloadFile = str_replace('`', '', $dounloadFile);
-                $dounloadFile = str_replace('|', '', $dounloadFile);
-                $dounloadFile = str_replace('^', '', $dounloadFile);
+                $uploadFile = str_replace('~', '', $uploadFile);
+                $uploadFile = str_replace('`', '', $uploadFile);
+                $uploadFile = str_replace('|', '', $uploadFile);
+                $uploadFile = str_replace('^', '', $uploadFile);
 
                 $patterns = array();
                 $patterns[0] = '/;N;/';
@@ -53,24 +53,22 @@ if ($_POST['submit_btn']) {
                 $replacements[0] = ';s:1:"NULL";';
                 $replacements[1] = '0:{s:6:"Array";s:6:"NULL";}';
 
-                $dounloadFile = preg_replace($patterns, $replacements, $dounloadFile);
+                $uploadFile = preg_replace($patterns, $replacements, $uploadFile);
 
                 $patternInt = '/i:(\d+);/';
-
-                $dounloadFile = preg_replace_callback($patternInt, function($matches) {
+                $uploadFile = preg_replace_callback($patternInt, function($matches) {
                     return 'i:1:"' . $matches[1] . '";';
-                }, $dounloadFile);
+                }, $uploadFile);
 
                 $patternD = '/[d]:(\d+\.?\d+?);/';
-
-                $dounloadFile = preg_replace_callback($patternD, function($matches) {
+                $uploadFile = preg_replace_callback($patternD, function($matches) {
                     return 'd:1:"' . $matches[1] . '";';
-                }, $dounloadFile);
+                }, $uploadFile);
 
-                $patternIdentify = '/("?;?[a-zA-Z]?:\d+:("|({))?)(.*?)(?=(("?;?[a-zA-Z]?:\d+:"?({)?)|\z))/';
-                $patternIdentify = '/(("?;?[a-zA-Z]?:\d+:")|("?;?[a-zA-Z]?:\d+:({)))(.*?)(?=(("?;?[a-zA-Z]?:\d+:")|("?;?[a-zA-Z]?:\d+:({))|\z))/';
+                $patternIdentsAll = '/("?;?[a-zA-Z]?:\d+:("|({))?)(.*?)(?=(("?;?[a-zA-Z]?:\d+:"?({)?)|\z))/';
+                $patternIdentsAll = '/(("?;?[a-zA-Z]?:\d+:")|("?;?[a-zA-Z]?:\d+:({)))(.*?)(?=(("?;?[a-zA-Z]?:\d+:")|("?;?[a-zA-Z]?:\d+:({))|\z))/';
                 $count = 0;
-                $dounloadFile = preg_replace_callback($patternIdentify, function($matches) use (&$count, &$lastMatch) {
+                $uploadFile = preg_replace_callback($patternIdentsAll, function($matches) use (&$count, &$lastMatch) {
                     $count++;
                     
                     if ($count % 2 == 0) {
@@ -86,21 +84,21 @@ if ($_POST['submit_btn']) {
                         }
                     }
                     
-                }, $dounloadFile);
+                }, $uploadFile);
 
                 $patternOpenBreacket = '/(?<!["]){(?!["])/';
                 $replacements = '`';
-                $dounloadFile = preg_replace($patternOpenBreacket, $replacements, $dounloadFile);
+                $uploadFile = preg_replace($patternOpenBreacket, $replacements, $uploadFile);
 
                 $patternCloseBreacket = '/(?<!["|\d])}(?!["])/';
                 $replacements = '^';
-                $dounloadFile = preg_replace($patternCloseBreacket, $replacements, $dounloadFile);
+                $uploadFile = preg_replace($patternCloseBreacket, $replacements, $uploadFile);
 
                 $patternCloseBreacket = '/\^/';
                 $replacements = '^~NULL|NULL';
-                $dounloadFile = preg_replace($patternCloseBreacket, $replacements, $dounloadFile);
+                $uploadFile = preg_replace($patternCloseBreacket, $replacements, $uploadFile);
 
-                $arResult = dessrial($dounloadFile);
+                $arResult = dessrial($uploadFile);
                 $arResult = removeElementByKey($arResult, "NULL");
                 $arResult = margeDuble($arResult);
             }
